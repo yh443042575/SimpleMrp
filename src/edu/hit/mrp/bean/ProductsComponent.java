@@ -2,6 +2,19 @@ package edu.hit.mrp.bean;
 
 public class ProductsComponent {
 
+	public ProductsComponent(int rID, int iD, int parentID, int count,
+			int projectTimeLimit, String displayText, String componentName,
+			String componentCode) {
+		super();
+		this.rID = rID;
+		ID = iD;
+		this.parentID = parentID;
+		this.count = count;
+		this.projectTimeLimit = projectTimeLimit;
+		this.displayText = displayText;
+		this.componentName = componentName;
+		this.componentCode = componentCode;
+	}
 	private int rID;
 	private int ID;
 	private int parentID;

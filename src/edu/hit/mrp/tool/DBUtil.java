@@ -8,7 +8,7 @@ public class DBUtil {
 
 	public Connection ConnectMySql() {
 
-		String url = "jdbc:mysql://localhost:3306/test";
+		String url = "jdbc:mysql://localhost:3306/simple_mrp";
 		String username = "root";
 		String password = "8828092";
 		Connection con = null;
