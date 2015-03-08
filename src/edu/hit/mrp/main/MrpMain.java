@@ -171,9 +171,9 @@ public class MrpMain extends Frame {
 				deadlineTextField, countTextField ,resultTextArea));
 
 		
-		setVacation.addActionListener(new setVacationMonitor());
+		setVacation.addActionListener(new setVacationMonitor(this));
 		
-		
+		this.setResizable(false);
 		this.setLayout(mapMainLayout);
 		this.setVisible(true);
 	}
@@ -217,18 +217,25 @@ class calculateMonitor implements ActionListener {
 		resultTextArea.setText(text.toString());
 		resultTextArea.repaint();
 	}
+	
+	
 }
 
 class setVacationMonitor implements ActionListener {
-
-	/**
-	 * 日期选择窗口
-	 */
-
-	private VacationSettings vacationSettings=new VacationSettings();
 	
+	Frame frame;
+	
+	public setVacationMonitor(Frame frame) {
+		super();
+		this.frame = frame;
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		vacationSettings.lauchFrame();
+		frame.setEnabled(false);
+		frame.setFocusable(false);
+		VacationSettings vacationSettings=new VacationSettings();
+		vacationSettings.lauchFrame(frame);
+		
 	}
 }

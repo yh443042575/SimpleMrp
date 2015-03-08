@@ -66,6 +66,7 @@ public class CalendarFrame extends Panel implements ActionListener {
 														// 表明，标签上应为中心。
 
 	public CalendarFrame() { // 窗体类
+
 		Panel pCenter = new Panel(); // 镶嵌
 		pCenter.setLayout(new GridLayout(7, 7));
 		for (int i = 0; i < 7; i++) { // 给周日到周六的button添加显示文本
@@ -94,15 +95,16 @@ public class CalendarFrame extends Panel implements ActionListener {
 		Enter.addActionListener(this); // 添加指定的动作侦听器
 		nextMonth.addActionListener(this);
 		previousMonth.addActionListener(this);
+		
 		Panel pNorth = new Panel(), pSouth = new Panel();
-		pNorth.add(lab1);
-		pNorth.add(lab2);
+		pNorth.add(lab1);//输入日期
+		pNorth.add(lab2);//年份
 		pNorth.add(text1);
-		pNorth.add(lab3);
+		pNorth.add(lab3);//月份
 		pNorth.add(text2);
-		pNorth.add(Enter);
-		pNorth.add(previousMonth);
-		pNorth.add(nextMonth);
+		pNorth.add(Enter);//确定
+		pNorth.add(previousMonth);//上月
+		pNorth.add(nextMonth);//下月
 		pSouth.add(showMessage);
 		showMessage.setText("日历：" + calendar.getYear() + "年"
 				+ calendar.getMonth() + "月");
