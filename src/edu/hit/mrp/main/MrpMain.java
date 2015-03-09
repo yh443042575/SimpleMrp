@@ -202,6 +202,8 @@ public class MrpMain extends Frame {
 		
 		setVacation.addActionListener(new LauchFrameMonitor(this,this));
 		saveOrder.addActionListener(new LauchFrameMonitor(this,this));
+		queryOrder.addActionListener(new LauchFrameMonitor(this,this));
+		removeOrder.addActionListener(new LauchFrameMonitor(this,this));
 		this.setResizable(false);
 		this.setLayout(mapMainLayout);
 		this.setVisible(true);
@@ -241,6 +243,18 @@ public class MrpMain extends Frame {
 				SaveOrder _saveOrder =new SaveOrder(mrpMain);
 				_saveOrder.lauchFrame();
 				}
+			}
+			else if(e.getSource()==queryOrder){
+				OrderQuery orderQuery=new OrderQuery();
+				orderQuery.lauchFrame(frame);
+				frame.setEnabled(false);
+				frame.setFocusable(false);
+			}
+			else if(e.getSource()==removeOrder){
+				OrderRemove orderRemove = new OrderRemove();
+				orderRemove.LauchFrame(frame);
+				frame.setEnabled(false);
+				frame.setFocusable(false);
 			}
 		}
 	}
