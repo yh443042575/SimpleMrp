@@ -279,14 +279,19 @@ public class VacationSettings extends Frame implements ActionListener {
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
 			Label label = (Label) e.getSource();
+			String date = calendar.getYear() + "-" + calendar.getMonth()
+			+ "-" + label.getText();
 			if (!label.getBackground().equals(Color.PINK)) {
 				label.setBackground(Color.PINK);
-				setVacationMap.put(calendar.getYear() + "-"
-						+ calendar.getMonth() + "-" + label.getText(), true);
+				if(!setVacationMap.containsKey(date)){
+				setVacationMap.put(date, true);
+				}
+				else {
+					setVacationMap.remove(date);
+				}
 			} else {
 				label.setBackground(Color.WHITE);
-				String date = calendar.getYear() + "-" + calendar.getMonth()
-						+ "-" + label.getText();
+				
 				if (!setVacationMap.containsKey(date)) {
 					setVacationMap.put(date, false);
 				} else {

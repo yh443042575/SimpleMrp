@@ -152,9 +152,9 @@ public class DateCalculator {
 		Date deadLineDate = sdf.parse(deadLine);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(deadLineDate);
-		long time = cal.getTimeInMillis();
+		long  time = cal.getTimeInMillis();
 		for (int i = 0; i < day; i++) {
-			cal.setTimeInMillis(time - (1000 * 3600 * 24) * i);
+			cal.setTimeInMillis(time-1000L*3600*24*i);
 			s=sdf.format(cal.getTime());
 			if(!vacationList.contains(s)){
 				dateList.add(s);

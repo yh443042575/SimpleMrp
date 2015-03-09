@@ -19,9 +19,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 public class MrpMain extends Frame {
 
-	private static int FRAME_LOCATION_X = 300, FRAME_LOCATION_Y = 100;
+	public static int FRAME_LOCATION_X = 300, FRAME_LOCATION_Y = 100;
 
 	/**
 	 * 布局用控件
@@ -29,13 +31,17 @@ public class MrpMain extends Frame {
 
 	private TextField deadlineTextField = new TextField(8);
 	private TextField countTextField = new TextField(8);
-	private TextArea resultTextArea = new TextArea();// 用来显示结果的text,未加工
+	protected TextArea resultTextArea = new TextArea();// 用来显示结果的text,未加工
 
 	private Button calculateConfirmButton = new Button("确认计算");
 
 	private Button setSolution =new Button("设置产品方案");
 	
 	private Button setVacation =new Button("设置工厂假期");
+	
+	private Button saveOrder =new Button("保存订单");
+	private Button queryOrder =new Button("查看实施方案");
+	private Button removeOrder =new Button("删除实施方案");
 	
 	
 	private Label selectSolutionLabel = new Label("选择方案：");
@@ -154,6 +160,27 @@ public class MrpMain extends Frame {
 		c.gridheight=1;
 		mapMainLayout.setConstraints(setVacation, c);
 		
+		this.add(saveOrder);
+		c.gridx=0;
+		c.gridy=5;
+		c.gridwidth=1;
+		c.gridheight=1;
+		mapMainLayout.setConstraints(saveOrder, c);
+		
+		this.add(queryOrder);
+		c.gridx=1;
+		c.gridy=5;
+		c.gridwidth=1;
+		c.gridheight=1;
+		mapMainLayout.setConstraints(queryOrder, c);
+		
+		this.add(removeOrder);
+		c.gridx=2;
+		c.gridy=5;
+		c.gridwidth=1;
+		c.gridheight=1;
+		mapMainLayout.setConstraints(removeOrder, c);
+		
 		this.add(resultTextArea);
 		resultTextArea.setEditable(false);
 		resultTextArea.setFocusable(false);
@@ -163,16 +190,18 @@ public class MrpMain extends Frame {
 		c.gridwidth=2;
 		c.gridheight=2;
 		
+		
+		
 		mapMainLayout.setConstraints(resultTextArea, c);
 		/**
 		 * 控件监听事件
 		 */
-		calculateConfirmButton.addActionListener(new calculateMonitor("方桌方案",
+		calculateConfirmButton.addActionListener(new CalculateMonitor("方桌方案",
 				deadlineTextField, countTextField ,resultTextArea));
 
 		
-		setVacation.addActionListener(new setVacationMonitor(this));
-		
+		setVacation.addActionListener(new LauchFrameMonitor(this,this));
+		saveOrder.addActionListener(new LauchFrameMonitor(this,this));
 		this.setResizable(false);
 		this.setLayout(mapMainLayout);
 		this.setVisible(true);
@@ -185,16 +214,47 @@ public class MrpMain extends Frame {
 
 	}
 
+	class LauchFrameMonitor implements ActionListener {
+		
+		Frame frame;
+		MrpMain mrpMain;
+		public LauchFrameMonitor(Frame frame ,MrpMain mrpMain) {
+			this.frame = frame;
+			this.mrpMain=mrpMain;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			if(e.getSource()==setVacation){
+			VacationSettings vacationSettings=new VacationSettings();
+			vacationSettings.lauchFrame(frame);
+			frame.setEnabled(false);
+			frame.setFocusable(false);
+			}
+			else if(e.getSource()==saveOrder){
+				if(resultTextArea.getText().equals("")){
+					JOptionPane.showMessageDialog(null, "请先录入方案!", "",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				else{
+				SaveOrder _saveOrder =new SaveOrder(mrpMain);
+				_saveOrder.lauchFrame();
+				}
+			}
+		}
+	}
 }
 
-class calculateMonitor implements ActionListener {
+class CalculateMonitor implements ActionListener {
 
 	String solutionName;
 	TextField deadlineTextField;
 	TextField countTextField;
 	TextArea resultTextArea;
+	List<String> solution;
 
-	public calculateMonitor(String solutionName,TextField deadlineTextField ,
+	public CalculateMonitor(String solutionName,TextField deadlineTextField ,
 	TextField countTextField,TextArea resultTextArea) {
 		super();
 		this.solutionName = solutionName;
@@ -209,7 +269,7 @@ class calculateMonitor implements ActionListener {
 		StringBuffer text=new StringBuffer();
 		deadlineTextField.repaint();
 		countTextField.repaint();
-		List<String> solution = dateCalculator.getResult(solutionName,
+		solution = dateCalculator.getResult(solutionName,
 				deadlineTextField.getText(), Integer.valueOf(countTextField.getText()));
 		for (int i = 0; i < solution.size(); i++) {
 			text.append(solution.get(i)+"\n\r");
@@ -218,24 +278,7 @@ class calculateMonitor implements ActionListener {
 		resultTextArea.repaint();
 	}
 	
+
 	
 }
 
-class setVacationMonitor implements ActionListener {
-	
-	Frame frame;
-	
-	public setVacationMonitor(Frame frame) {
-		super();
-		this.frame = frame;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		frame.setEnabled(false);
-		frame.setFocusable(false);
-		VacationSettings vacationSettings=new VacationSettings();
-		vacationSettings.lauchFrame(frame);
-		
-	}
-}
