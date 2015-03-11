@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 
 import edu.hit.mrp.dao.OrderDao;
+import edu.hit.mrp.dao.StockTransitDao;
 import edu.hit.mrp.dao.VacationDao;
 import edu.hit.mrp.main.VacationSettings.labelDayMonitor;
 
@@ -32,6 +33,7 @@ public class OrderQuery extends Frame implements ActionListener {
 	Map<String, Boolean> setVacationMap = new HashMap<String, Boolean>();// 用于保存对日期的修改
 	List<String> monthOrderList = new ArrayList<String>();// 用于显示当前月份数据库中存储的假期
 	OrderDao orderDao = new OrderDao();
+	StockTransitDao stockTransitDao =new StockTransitDao();
 
 	Label labelDay[] = new Label[42]; // 用来输出日历的天的数组
 	Button titleName[] = new Button[7]; // 周一到周天的按键
@@ -214,18 +216,33 @@ public class OrderQuery extends Frame implements ActionListener {
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
 			Label label = (Label) e.getSource();
+			String title ="今日生产任务与库存量";
 			String date = calendar.getYear() + "-" + calendar.getMonth() + "-"
 					+ label.getText();
 			if (label.getBackground().equals(Color.YELLOW)) {
 				try {
-					String dayOrder = orderDao.queryOrders(date);
-					JOptionPane.showMessageDialog(null, dayOrder,"今日任务",
+					String dayOrderStock = orderDao.queryOrders(date);
+					dayOrderStock+= "\n库存量：\n"+stockTransitDao.getStockInformation(date);
+					JOptionPane.showMessageDialog(null, dayOrderStock,title,
 							JOptionPane.DEFAULT_OPTION);
 
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+			}
+			else if(label.getBackground().equals(Color.WHITE)){
+				try {
+					StockTransitDao stockTransitDao =new StockTransitDao();
+					String dayStock = stockTransitDao.getStockInformation(date);
+					JOptionPane.showMessageDialog(null, "库存量：\n"+dayStock,title,
+							JOptionPane.DEFAULT_OPTION);
+
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		}
 

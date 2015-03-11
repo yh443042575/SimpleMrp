@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +35,6 @@ public class VacationDao {
 
 	public List<String> getVacationList(String deadline) throws Exception {
 		List<String> vacationliList = new ArrayList<String>();
-		Date d;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Connection myConnection = dbUtil.ConnectMySql();
 		Statement stat = myConnection.createStatement();
@@ -72,7 +70,6 @@ public class VacationDao {
 	
 	public boolean setVacation(Map<String,Boolean> setVacationMap){
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Connection myConnection = dbUtil.ConnectMySql();
 		Statement stat;
 		try {

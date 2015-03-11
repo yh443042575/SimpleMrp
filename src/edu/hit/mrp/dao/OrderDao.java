@@ -1,6 +1,8 @@
 package edu.hit.mrp.dao;
 
+import java.security.interfaces.RSAKey;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -15,6 +17,7 @@ import edu.hit.mrp.tool.DBUtil;
 public class OrderDao {
 
 	DBUtil dbUtil = new DBUtil();
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	public boolean insertOrder(String[] orderList, String orderName)
 			throws ParseException {
@@ -60,7 +63,7 @@ public class OrderDao {
 
 	public List<String> getMonthOrderList(String date) throws Exception {
 		List<String> monthOrderliList = new ArrayList<String>();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
 		Connection myConnection = dbUtil.ConnectMySql();
 		Statement stat = myConnection.createStatement();
 
@@ -78,8 +81,6 @@ public class OrderDao {
 
 	public String queryOrders(String date) throws Exception {
 		StringBuffer orderliList = new StringBuffer();
-		Date d;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Connection myConnection = dbUtil.ConnectMySql();
 		Statement stat = myConnection.createStatement();
 
@@ -87,7 +88,8 @@ public class OrderDao {
 				+ date + "'");
 		while (rs.next()) {
 			orderliList.append((rs.getString("order_name") + " "
-					+ rs.getString("material") + "£º" + rs.getInt("count"))+"\n\r");
+					+ rs.getString("material") + "£º" + rs.getInt("count"))
+					+ "\n\r");
 		}
 
 		stat.close();
@@ -96,44 +98,47 @@ public class OrderDao {
 	}
 
 	public List<String> getOrderChoice() throws Exception {
-		List<String> orderChoices =new ArrayList<String>();
+		List<String> orderChoices = new ArrayList<String>();
 		Connection myConnection = dbUtil.ConnectMySql();
 		Statement stat = myConnection.createStatement();
-		
-		ResultSet rs = stat.executeQuery("select order_name from `order` GROUP BY order_name");
-		while(rs.next()){
+
+		ResultSet rs = stat
+				.executeQuery("select order_name from `order` GROUP BY order_name");
+		while (rs.next()) {
 			orderChoices.add(rs.getString("order_name"));
 		}
-		
+
 		stat.close();
 		myConnection.close();
 		return orderChoices;
-		
-		
+
 	}
 
-	public String queryOrderInformation(String selectedItem) throws Exception{
-		String orderInformation="";
+	public String queryOrderInformation(String selectedItem) throws Exception {
+		String orderInformation = "";
 		Connection myConnection = dbUtil.ConnectMySql();
 		Statement stat = myConnection.createStatement();
-		
-		ResultSet rs = stat.executeQuery("select order_name from `order` where order_name = '"+selectedItem+"'GROUP BY order_name");
-		while(rs.next()){
-			orderInformation+=rs.getString("order_name");
+
+		ResultSet rs = stat
+				.executeQuery("select order_name from `order` where order_name = '"
+						+ selectedItem + "'GROUP BY order_name");
+		while (rs.next()) {
+			orderInformation += rs.getString("order_name");
 		}
-		
+
 		stat.close();
 		myConnection.close();
 		return orderInformation;
 	}
 
 	public boolean removeOrder(String selectedItem) {
-		
+
 		Connection myConnection = dbUtil.ConnectMySql();
 		Statement stat;
 		try {
 			stat = myConnection.createStatement();
-			stat.execute("DELETE FROM `order` WHERE order_name ='"+selectedItem+"'" );
+			stat.execute("DELETE FROM `order` WHERE order_name ='"
+					+ selectedItem + "'");
 			stat.close();
 			myConnection.close();
 			return true;
@@ -144,6 +149,21 @@ public class OrderDao {
 		}
 
 	}
-	
-	
+
+	public void insertSubPlan(Date date, String order_name, String material,
+			int count) throws Exception {
+		Connection myConnection = dbUtil.ConnectMySql();
+		PreparedStatement prep = myConnection
+				.prepareStatement("insert into `order` (date,material,count,order_name) values (?,?,?,?)");
+
+		prep.setString(1, sdf.format(date));
+		prep.setString(2, material);
+		prep.setInt(3, count);
+		prep.setString(4, order_name);
+
+		prep.execute();
+		prep.close();
+		myConnection.close();
+
+	}
 }

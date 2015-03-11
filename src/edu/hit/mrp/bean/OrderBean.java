@@ -8,6 +8,18 @@ public class OrderBean {
 	private String orderName;
 	private String material;
 	private int count;
+	
+	public OrderBean (){
+		
+	}
+
+	public OrderBean(Date date, String orderName, String material, int count) {
+		super();
+		this.date = date;
+		this.orderName = orderName;
+		this.material = material;
+		this.count = count;
+	}
 
 	public Date getDate() {
 		return date;

@@ -1,16 +1,12 @@
 package edu.hit.mrp.main;
 
-import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Choice;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Label;
-import java.awt.Panel;
 import java.awt.TextArea;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
@@ -18,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -30,18 +27,23 @@ public class MrpMain extends Frame {
 	 */
 
 	private TextField deadlineTextField = new TextField(8);
+	private Label dateExampleLabel =new Label("例如：2007-10-25");
 	private TextField countTextField = new TextField(8);
 	protected TextArea resultTextArea = new TextArea();// 用来显示结果的text,未加工
 
-	private Button calculateConfirmButton = new Button("确认计算");
+	private Button calculateConfirmButton = new Button("计算毛需求");
 
-	private Button setSolution =new Button("设置产品方案");
+	private Button setSolution =new Button("新建产品结构");
 	
 	private Button setVacation =new Button("设置工厂假期");
 	
-	private Button saveOrder =new Button("保存订单");
-	private Button queryOrder =new Button("查看实施方案");
+	private Button saveOrder =new Button("保存计划");
+	private Button queryOrder =new Button("查看执行计划");
 	private Button removeOrder =new Button("删除实施方案");
+	
+	private Button releaseSavedOrder = new Button("下达已保存计划");
+	private Button releaseCurrentOrder = new Button("下达当前订单");
+	
 	
 	
 	private Label selectSolutionLabel = new Label("选择方案：");
@@ -104,9 +106,10 @@ public class MrpMain extends Frame {
 		this.add(selectSolution);
 		selectSolution.setVisible(true);
 		selectSolution.add("方桌方案");
+		selectSolution.add("圆台方案");
 		c.gridx=1;
 		c.gridy=0;
-		c.gridwidth=2;
+		c.gridwidth=3;
 		c.gridheight=1;
 		mapMainLayout.setConstraints(selectSolution, c);
 		
@@ -118,11 +121,19 @@ public class MrpMain extends Frame {
 		mapMainLayout.setConstraints(dateLabel, c);
 		
 		this.add(deadlineTextField);
+		deadlineTextField.setText("2015-04-23");
 		c.gridx=1;
+		c.gridy=1;
+		c.gridwidth=1;
+		c.gridheight=1;
+		mapMainLayout.setConstraints(deadlineTextField, c);
+		
+		this.add(dateExampleLabel);
+		c.gridx=2;
 		c.gridy=1;
 		c.gridwidth=2;
 		c.gridheight=1;
-		mapMainLayout.setConstraints(deadlineTextField, c);
+		mapMainLayout.setConstraints(dateExampleLabel, c);
 		
 		this.add(countLabel);
 		c.gridx=0;
@@ -142,7 +153,7 @@ public class MrpMain extends Frame {
 		this.add(calculateConfirmButton);
 		c.gridx=2;
 		c.gridy=2;
-		c.gridwidth=1;
+		c.gridwidth=2;
 		c.gridheight=1;
 		mapMainLayout.setConstraints(calculateConfirmButton, c);
 		
@@ -153,6 +164,8 @@ public class MrpMain extends Frame {
 		c.gridheight=1;
 		mapMainLayout.setConstraints(setSolution, c);
 		
+		
+		
 		this.add(setVacation);
 		c.gridx=0;
 		c.gridy=4;
@@ -160,26 +173,43 @@ public class MrpMain extends Frame {
 		c.gridheight=1;
 		mapMainLayout.setConstraints(setVacation, c);
 		
-		this.add(saveOrder);
+		this.add(releaseSavedOrder);
 		c.gridx=0;
 		c.gridy=5;
 		c.gridwidth=1;
 		c.gridheight=1;
+		mapMainLayout.setConstraints(releaseSavedOrder, c);
+		
+		this.add(saveOrder);
+		c.gridx=0;
+		c.gridy=6;
+		c.gridwidth=1;
+		c.gridheight=1;
 		mapMainLayout.setConstraints(saveOrder, c);
+		
+		
 		
 		this.add(queryOrder);
 		c.gridx=1;
-		c.gridy=5;
+		c.gridy=6;
 		c.gridwidth=1;
 		c.gridheight=1;
 		mapMainLayout.setConstraints(queryOrder, c);
 		
 		this.add(removeOrder);
 		c.gridx=2;
-		c.gridy=5;
+		c.gridy=6;
 		c.gridwidth=1;
 		c.gridheight=1;
 		mapMainLayout.setConstraints(removeOrder, c);
+		
+		this.add(releaseCurrentOrder);
+		releaseCurrentOrder.setVisible(false);
+		c.gridx=3;
+		c.gridy=6;
+		c.gridwidth=1;
+		c.gridheight=1;
+		mapMainLayout.setConstraints(releaseCurrentOrder, c);
 		
 		this.add(resultTextArea);
 		resultTextArea.setEditable(false);
@@ -187,26 +217,25 @@ public class MrpMain extends Frame {
 		resultTextArea.setBackground(Color.WHITE);
 		c.gridx=1;
 		c.gridy=3;
-		c.gridwidth=2;
-		c.gridheight=2;
-		
-		
-		
+		c.gridwidth=3;
+		c.gridheight=3;		
 		mapMainLayout.setConstraints(resultTextArea, c);
 		/**
 		 * 控件监听事件
 		 */
 		calculateConfirmButton.addActionListener(new CalculateMonitor("方桌方案",
-				deadlineTextField, countTextField ,resultTextArea));
+				deadlineTextField, countTextField ,resultTextArea,this));
 
 		
 		setVacation.addActionListener(new LauchFrameMonitor(this,this));
 		saveOrder.addActionListener(new LauchFrameMonitor(this,this));
 		queryOrder.addActionListener(new LauchFrameMonitor(this,this));
 		removeOrder.addActionListener(new LauchFrameMonitor(this,this));
+		releaseCurrentOrder.addActionListener(new LauchFrameMonitor(this,this));
 		this.setResizable(false);
 		this.setLayout(mapMainLayout);
 		this.setVisible(true);
+		
 	}
 
 	public static void main(String args[]) {
@@ -256,43 +285,52 @@ public class MrpMain extends Frame {
 				frame.setEnabled(false);
 				frame.setFocusable(false);
 			}
+			else if(e.getSource()==releaseCurrentOrder){
+				ReleaseOrderInputOrderName releaseOrderInputOrderName = new ReleaseOrderInputOrderName(mrpMain);
+				releaseOrderInputOrderName.lauchFrame();
+				
+			}
 		}
 	}
-}
 
-class CalculateMonitor implements ActionListener {
+	class CalculateMonitor implements ActionListener {
 
-	String solutionName;
-	TextField deadlineTextField;
-	TextField countTextField;
-	TextArea resultTextArea;
-	List<String> solution;
+		String solutionName;
+		TextField deadlineTextField;
+		TextField countTextField;
+		TextArea resultTextArea;
+		List<String> solution;
+		MrpMain mrpMain;
 
-	public CalculateMonitor(String solutionName,TextField deadlineTextField ,
-	TextField countTextField,TextArea resultTextArea) {
-		super();
-		this.solutionName = solutionName;
-		this.deadlineTextField = deadlineTextField;
-		this.countTextField = countTextField;
-		this.resultTextArea = resultTextArea;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		DateCalculator dateCalculator = new DateCalculator();
-		StringBuffer text=new StringBuffer();
-		deadlineTextField.repaint();
-		countTextField.repaint();
-		solution = dateCalculator.getResult(solutionName,
-				deadlineTextField.getText(), Integer.valueOf(countTextField.getText()));
-		for (int i = 0; i < solution.size(); i++) {
-			text.append(solution.get(i)+"\n\r");
+		public CalculateMonitor(String solutionName,TextField deadlineTextField ,
+		TextField countTextField,TextArea resultTextArea,MrpMain mrpMain) {
+			super();
+			this.solutionName = solutionName;
+			this.deadlineTextField = deadlineTextField;
+			this.countTextField = countTextField;
+			this.resultTextArea = resultTextArea;
+			this.mrpMain=mrpMain;
 		}
-		resultTextArea.setText(text.toString());
-		resultTextArea.repaint();
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			DateCalculator dateCalculator = new DateCalculator();
+			StringBuffer text=new StringBuffer();
+			deadlineTextField.repaint();
+			countTextField.repaint();
+			solution = dateCalculator.getResult(solutionName,
+					deadlineTextField.getText(), Integer.valueOf(countTextField.getText()));
+			for (int i = 0; i < solution.size(); i++) {
+				text.append(solution.get(i)+"\n\r");
+			}
+			resultTextArea.setText(text.toString());
+			resultTextArea.repaint();
+			releaseCurrentOrder.setVisible(true);
+			releaseCurrentOrder.repaint();
+			mrpMain.setVisible(true);
+			
+		}
+		
 	}
-	
 
-	
 }
-

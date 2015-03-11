@@ -35,4 +35,31 @@ public class ProductsComponentDao {
 		myConnection.close();
 		return solution;
 	}
+	
+	public int getBatch(String material) throws Exception{
+		int batch=0;
+		Connection myConnection=dbUtil.ConnectMySql();
+		Statement stat=myConnection.createStatement();
+		ResultSet rs=stat.executeQuery("select batch from PRODUCTS_COMPONENT where COMPONENT_CODE = '"+material+"';");
+		if(rs.next()){
+			batch = rs.getInt("batch");		
+		}
+		rs.close();
+		stat.close();
+		myConnection.close();
+		return batch;
+	}
+	public int getProjectTimeLimit(String material) throws Exception{
+		int batch=0;
+		Connection myConnection=dbUtil.ConnectMySql();
+		Statement stat=myConnection.createStatement();
+		ResultSet rs=stat.executeQuery("select PROJECT_TIME_LIMIT from PRODUCTS_COMPONENT where COMPONENT_CODE = '"+material+"';");
+		if(rs.next()){
+			batch = rs.getInt("PROJECT_TIME_LIMIT");		
+		}
+		rs.close();
+		stat.close();
+		myConnection.close();
+		return batch;
+	}
 }

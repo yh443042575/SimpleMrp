@@ -23,26 +23,15 @@ public class DateCalculator {
 	public void crateResult(List<ProductsComponent> solution, int deadline,
 			int parentID) {
 
-		boolean hasChild = false;
 		if (solution.size() != 0) {
 			for (ProductsComponent pro : solution) {
 				if (pro.getParentID() == parentID) {
-					hasChild = true;
 					this.result.add(new Prepare(deadline, pro
 							.getComponentCode(), pro.getCount()));
 					crateResult(solution, deadline - pro.getProjectTimeLimit(),
 							pro.getID());
-
+					
 				}
-			}
-			if (hasChild == false) {
-				for (ProductsComponent pro : solution)
-					if (pro.getrID() == parentID) {
-						this.result.add(new Prepare(deadline, pro
-								.getComponentCode()
-								+ "的原料", pro.getCount()));
-					}
-
 			}
 		}
 
@@ -53,12 +42,13 @@ public class DateCalculator {
 	}
 
 	/**
-	 * 通过给定方案与最后期限，算出该到那个时间点应该出哪些货物
+	 * 通过给定方案与最后期限以及订货数量，算出该到哪个时间点应该出哪些货物
 	 * 
 	 * @param solution
 	 * @param deadline
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<String> getResult(String solutionName, String deadline,
 			int count) {
 		
@@ -69,16 +59,10 @@ public class DateCalculator {
 			this.crateResult(productsComponentDao.getSolution(solutionName),
 					getWorkDays(deadline), 0);
 			Collections.sort(result);
-			
-			
-			
+		
 			for (Prepare p : result) {
-
 				if (p.preparation.matches("[a-zA-z]?"))
 					stringResult.add(dateList.get(workDays-p.deadline)+ "，需要生产出" + count
-							* p.unit + "个" + p.preparation);
-				else
-					stringResult.add(dateList.get(workDays-p.deadline)+ "，需要准备出" + count
 							* p.unit + "个" + p.preparation);
 			}
 			return stringResult;
@@ -142,7 +126,7 @@ public class DateCalculator {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<String> getDateList(String deadLine, int day) throws Exception {
+	public List<String> getDateList(String deadLine, int day) throws Exception {
 
 		List<String> dateList =new ArrayList<String>();
 		List<String> vacationList = vacationDao.getVacationList(deadLine);
@@ -162,6 +146,8 @@ public class DateCalculator {
 		}
 		return dateList;
 	}
+	
+	
 
 	class Prepare implements Comparable {
 		@Override
@@ -182,6 +168,14 @@ public class DateCalculator {
 		int deadline;
 		int unit;
 		String preparation;
+
+		public int getUnit() {
+			return unit;
+		}
+
+		public void setUnit(int unit) {
+			this.unit = unit;
+		}
 
 		public Prepare(int deadline, String preparation, int unit) {
 			this.deadline = deadline;
